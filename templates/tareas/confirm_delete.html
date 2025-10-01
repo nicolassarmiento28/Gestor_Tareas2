@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% block title %}Eliminar Tarea: {{ object.titulo }}{%
+endblock %} {% block content %}
+<div class="card">
+  <h2>Confirmar Eliminación</h2>
+
+  <div class="card" style="border-left: 4px solid #dc3545">
+    <h3 style="color: #dc3545">
+      ¿Estás seguro de que deseas eliminar esta tarea?
+    </h3>
+    <p>
+      Estás a punto de eliminar la tarea: <strong>"{{ object.titulo }}"</strong>
+    </p>
+
+    <div
+      style="
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 4px;
+        margin: 1rem 0;
+      "
+    >
+      <p>
+        <strong>Descripción:</strong> {{
+        object.descripcion|truncatewords:30|default:"Sin descripción" }}
+      </p>
+      <p><strong>Prioridad:</strong> {{ object.get_prioridad_display }}</p>
+      <p>
+        <strong>Estado:</strong> {% if object.vigente %}Vigente{% else
+        %}Completada{% endif %}
+      </p>
+      <p>
+        <strong>Fecha de creación:</strong> {{ object.fecha_creacion|date:"d/m/Y
+        H:i" }}
+      </p>
+    </div>
+
+    <p style="color: #dc3545; font-weight: bold">
+      ⚠️ Esta acción no se puede deshacer.
+    </p>
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem">
+      <button type="submit" class="btn btn-danger">Sí, eliminar tarea</button>
+      <a
+        href="{% url 'tareas:tarea_detail' object.pk %}"
+        class="btn btn-secondary"
+        >Cancelar</a
+      >
+      <a href="{% url 'tareas:tarea_list' %}" class="btn btn-primary"
+        >Volver a la lista</a
+      >
+    </div>
+  </form>
+</div>
+{% endblock %}

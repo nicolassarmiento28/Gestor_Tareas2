@@ -1,0 +1,121 @@
+{% extends 'base.html' %} {% block title %}{{ tarea.titulo }} - Detalle de
+Tarea{% endblock %} {% block content %}
+<style>
+  .prioridad-alta {
+    background: #dc3545;
+    color: white;
+  }
+  .prioridad-media {
+    background: #ffc107;
+    color: black;
+  }
+  .prioridad-baja {
+    background: #28a745;
+    color: white;
+  }
+  .estado-vigente {
+    background: #28a745;
+    color: white;
+  }
+  .estado-completado {
+    background: #6c757d;
+    color: white;
+  }
+  .badge {
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+</style>
+
+<div class="card">
+  <div
+    style="
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    "
+  >
+    <h2>{{ tarea.titulo }}</h2>
+    <div style="display: flex; gap: 0.5rem">
+      <a href="{% url 'tareas:tarea_list' %}" class="btn btn-secondary"
+        >← Volver</a
+      >
+      <a href="{% url 'tareas:tarea_update' tarea.pk %}" class="btn btn-warning"
+        >Editar</a
+      >
+      <a href="{% url 'tareas:tarea_delete' tarea.pk %}" class="btn btn-danger"
+        >Eliminar</a
+      >
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Descripción</h3>
+    <p>
+      {{ tarea.descripcion|default:"No hay descripción disponible."|linebreaks
+      }}
+    </p>
+  </div>
+
+  <div
+    style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    "
+  >
+    <div class="card">
+      <h4>Información General</h4>
+      <p>
+        <strong>Prioridad:</strong>
+        <span
+          class="badge {% if tarea.prioridad == 1 %}prioridad-alta {% elif tarea.prioridad == 2 %}prioridad-media {% else %}prioridad-baja{% endif %}"
+        >
+          {{ tarea.get_prioridad_display }}
+        </span>
+      </p>
+      <p>
+        <strong>Estado:</strong>
+        <span
+          class="badge {% if tarea.vigente %}estado-vigente{% else %}estado-completado{% endif %}"
+        >
+          {% if tarea.vigente %}Vigente{% else %}Completada{% endif %}
+        </span>
+      </p>
+    </div>
+
+    <div class="card">
+      <h4>Fechas</h4>
+      <p>
+        <strong>Fecha de creación:</strong> {{ tarea.fecha_creacion|date:"d/m/Y
+        H:i" }}
+      </p>
+      <p>
+        <strong>Fecha límite:</strong> {{ tarea.fecha_limite|default:"No
+        especificada" }}
+      </p>
+    </div>
+  </div>
+
+  <div
+    style="
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    "
+  >
+    <a href="{% url 'tareas:tarea_list' %}" class="btn btn-secondary"
+      >Volver a la lista</a
+    >
+    <a href="{% url 'tareas:tarea_update' tarea.pk %}" class="btn btn-warning"
+      >Editar Tarea</a
+    >
+    <a href="{% url 'tareas:tarea_create' %}" class="btn btn-success"
+      >Nueva Tarea</a
+    >
+  </div>
+</div>
+{% endblock %}

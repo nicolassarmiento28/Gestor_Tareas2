@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Editar {{ object.titulo }}{% else %}Crear Nueva Tarea{% endif %}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>{% if object %}Editar Tarea: {{ object.titulo }}{% else %}Crear Nueva Tarea{% endif %}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_titulo">Título:</label>
+            <input type="text" name="titulo" id="id_titulo" class="form-control" 
+                   value="{{ form.titulo.value|default:'' }}" required maxlength="120"
+                   placeholder="Ingresa el título de la tarea">
+            {% if form.titulo.errors %}
+                <div style="color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem;">
+                    {{ form.titulo.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_descripcion">Descripción:</label>
+            <textarea name="descripcion" id="id_descripcion" class="form-control" 
+                      rows="4" placeholder="Describe los detalles de la tarea (opcional)">{{ form.descripcion.value|default:'' }}</textarea>
+            {% if form.descripcion.errors %}
+                <div style="color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem;">
+                    {{ form.descripcion.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="id_prioridad">Prioridad:</label>
+                <select name="prioridad" id="id_prioridad" class="form-control">
+                    {% for value, text in form.fields.prioridad.choices %}
+                        <option value="{{ value }}" {% if form.prioridad.value == value %}selected{% endif %}>
+                            {{ text }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if form.prioridad.errors %}
+                    <div style="color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem;">
+                        {{ form.prioridad.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_fecha_limite">Fecha límite:</label>
+                <input type="date" name="fecha_limite" id="id_fecha_limite" class="form-control"
+                       value="{{ form.fecha_limite.value|default:'' }}">
+                {% if form.fecha_limite.errors %}
+                    <div style="color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem;">
+                        {{ form.fecha_limite.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if form.vigente %}
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" name="vigente" id="id_vigente" 
+                       {% if form.vigente.value %}checked{% endif %}>
+                Tarea vigente
+            </label>
+            {% if form.vigente.errors %}
+                <div style="color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem;">
+                    {{ form.vigente.errors }}
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div style="display: flex; gap: 0.5rem; margin-top: 1.5rem;">
+            <button type="submit" class="btn btn-success">
+                {% if object %}Actualizar{% else %}Crear{% endif %} Tarea
+            </button>
+            <a href="{% url 'tareas:tarea_list' %}" class="btn btn-secondary">Cancelar</a>
+            {% if object %}
+                <a href="{% url 'tareas:tarea_detail' object.pk %}" class="btn btn-primary">Ver Detalles</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+{% endblock %}
